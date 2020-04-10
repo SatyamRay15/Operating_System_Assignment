@@ -1,66 +1,172 @@
 #include<stdio.h>
 #include<unistd.h>
+#include<fcntl.h>
 
-int scheduling_process(int processing_no, int processing_no_2)
+int function(int a)
 {
-	printf("Process with %d burst time is under execution. \n", processing_no);
-	sleep(processing_no);
-	printf("The execution of the process with larger burst time is completed.\n");
-	printf("Process with %d burst time is under execution \n", processing_no_2);
-	sleep(processing_no_2);
-	printf("The execution of the process with smaller burst time is completed.\n");
-	printf("Now both the processes have completed executing.\n");
+	printf("Process with %d burst time is under execution. \n", a);
+	sleep(a);
+	printf("The execution of the process with %d burst time is completed.\n",a);
+	printf("\n");
 }
 
 int main()
 {
-	int array_burst_time[2], array_arrival_time[2], array_final_burst_time[2], array_small_burst_time[2];
-	char array_process_no[2] = {'a','b'};
+	int j;
+	float Tat=0,Wat=0,sjf_Tat=0,sjf_Wat=0,awt,ata;
+        printf("Enter the number of processes to be executed: \n");
+        scanf("%d",&j); 
+	int burst_time[j], arrival_time[j], complete_time[j], turnaround_time[j], waiting_time[j],sjf_at[j],sjf_bt[j];
+	int process_id[j],sjf_process_id[j];
+
 	printf("Enter the values of arrival time: \n");
-	for(int i=0;i<2;i++)
+	for(int i=1;i<=j;i++)
 	{
-		scanf("%d",&array_arrival_time[i]);
+		scanf("%d",&arrival_time[i]);
+		sjf_at[i]=arrival_time[i];
 	}
-	for(int i=0;i<2;i++)
+	for(int i=1;i<=j;i++)
 	{
-		array_burst_time[i] = array_arrival_time[i] * 2;
+		burst_time[i] = arrival_time[i] * 2;
+		sjf_bt[i]=burst_time[i];
 	}
-	printf("The respective values of the arrival time and burst time is:\n");
-		printf("PROCESS	BT	AT \n");
-	for(int i=0;i<2;i++)
+
+	printf("The table is as follows:\n");
+	printf("PROCESS ID\t ARRIVAL TIME\t BURST TIME \n");
+	for(int i=1;i<=j;i++)
 	{
-		printf("%c 	%d	%d \n",array_process_no[i], array_burst_time[i], array_arrival_time[i]);
+		process_id[i]=i;
+		printf("  P%d\t\t   %d\t\t   %d \n",process_id[i],arrival_time[i],burst_time[i]);
 	}
 	printf("The value with the largest burst time will be selected: \n");
-	for(int i=0;i<2;i++)
+	for(int k=1;k<=j;k++)
 	{
-		if(array_burst_time[i] > array_burst_time[i+1])
+		for(int i=1;i<j;i++)
 		{
-			int process_no;
-			array_final_burst_time[i] = array_burst_time[i];
-			array_final_burst_time[i+1] = array_burst_time[i+1];
-			printf("Larger burst time= %d \n",array_final_burst_time[i]);
-			printf("Smaller burst time= %d \n",array_final_burst_time[i+1]);
-			process_no = scheduling_process(array_final_burst_time[i], array_final_burst_time[i+1]);
-			break;
+			if(burst_time[i]<=burst_time[i+1])
+			{
+			int temp,temp1;
+			temp=burst_time[i+1];
+			burst_time[i+1]=burst_time[i];
+			burst_time[i]=temp;
+		
+			temp=arrival_time[i+1];
+			arrival_time[i+1]=arrival_time[i];
+			arrival_time[i]=temp;
+
+			temp1=process_id[i+1];
+			process_id[i+1]=process_id[i];
+			process_id[i]=temp1;
+			}
 		}
-		else if(array_burst_time[i] < array_burst_time[i+1])
-		{
-			int process_no;
-			array_final_burst_time[i] = array_burst_time[i+1];
-			array_final_burst_time[i+1] = array_burst_time[i];
-			printf("Larger burst time= %d \n",array_final_burst_time[i]);
-			printf("Smaller burst time= %d \n",array_final_burst_time[i+1]);
-			process_no = scheduling_process(array_final_burst_time[i], array_final_burst_time[i+1]);
-			break;
-		}
-		else if(array_burst_time[i] = array_burst_time[i+1])
-		{
-			printf("There will be context switching among the processes since they are arriving at the same time.\n");
-			break;
-		}
-	
 	}
+	printf("The sequence of the execution after selecting the largest BT is given below Table: \n");
+	printf("PROCESS ID\t ARRIVAL TIME\t BURST TIME    \n"); 
+	for(int i=1;i<=j;i++)
+	{
+	printf("   P%d\t\t    %d\t\t    %d     \n",process_id[i],arrival_time[i],burst_time[i]);
+	}
+
+	for(int i=1;i<=j;i++)
+	{
+	int number;
+	number=function(burst_time[i]);
+	}
+	printf("Now all the process have been executed. \n");
+	printf("\n");
+
+	printf("The final table is as follows: \n");
+	int sum=arrival_time[1];
+	for(int i=1;i<=j;i++)
+	{
+	sum=sum+burst_time[i];
+	complete_time[i]=sum;
+	}
+
+	for(int i=1;i<=j;i++)
+	{
+	turnaround_time[i]=complete_time[i]-arrival_time[i];
+	Tat=Tat+turnaround_time[i];
+	}
+
+	for(int i=1;i<=j;i++)
+	{
+ 	waiting_time[i]=turnaround_time[i]-burst_time[i];
+	Wat=Wat+waiting_time[i];
+	}
+
+	printf("PROCESS ID\t ARRIVAL TIME\t BURST TIME\t COMPLETE TIME\t TURNAROUND TIME\t WAITING TIME \n");
+	for(int i=1;i<=j;i++)
+	{
+	printf("   P%d\t\t   %d\t\t   %d\t\t   %d\t\t   %d\t\t\t   %d \n",process_id[i],arrival_time[i],burst_time[i],complete_time[i],turnaround_time[i],waiting_time[i]);
+	}
+		
+	Tat=Tat/j;
+	printf("The average Turn Around Time of the overall process is: %f \n",Tat);
+	
+	Wat=Wat/j;
+	printf("The average Waiting Time of the overall process is: %f \n", Wat);
+
+	//Shortest Job First
+	printf("\n");
+	 printf("The table for SHORTEST JOB FIRST is as follows:\n");
+        printf("PROCESS ID\t ARRIVAL TIME\t BURST TIME \n");
+        for(int i=1;i<=j;i++)
+        {
+                sjf_process_id[i]=i;
+                printf("  P%d\t\t   %d\t\t   %d \n",sjf_process_id[i],sjf_at[i],sjf_bt[i]);
+        }
+	
+	for(int l=1;l<=j;l++)
+	{
+		for(int i=1;i<j;i++)
+		{
+			if(sjf_bt[i]<sjf_bt[l])
+			{
+			int temporary;
+			temporary=sjf_at[i];
+			sjf_at[i]=sjf_bt[l];
+			sjf_bt[l]=temporary;
+
+			temporary=sjf_bt[i];
+			sjf_bt[i]=sjf_bt[l];
+			sjf_bt[l]=temporary;
+
+			temporary=sjf_process_id[i];
+			sjf_process_id[i]=sjf_process_id[l];
+			sjf_process_id[l]=temporary;
+			}
+		}
+	}
+int st[j],ft[j],wt[j],sjf_ta[j];
+for(int i=1;i<=j;i++)
+{
+	if(i==1)
+	{
+		st[i]=sjf_at[i];
+	}
+	else
+	{
+	st[i]=ft[i-1];
+	wt[i]=st[i]-sjf_at[i];
+	ft[i]=st[i]+sjf_bt[i];
+	sjf_ta[i]=ft[i]-sjf_at[i];
+	sjf_Wat=sjf_Wat+wt[i];
+	sjf_Tat=sjf_Tat+sjf_ta[i];
+	}
+
+}
+
+awt=(float)sjf_Wat/j;
+ata=(float)sjf_Tat/j;
+
+printf("\nPROCESS ID\t ARRIVAL TIME\t BURST TIME\t WAITING TIME\t TURNAROUND TIME \n");
+for(int i=1;i<=j;i++)
+{
+	printf("\n P%d\t\t %d\t\t %d\t\t %d\t\t %d\t\t \n",sjf_process_id[i],sjf_at[i],sjf_bt[i],wt[i],sjf_ta[i]);	
+}
+printf("\n Average Waiting Time is: %f",awt);
+printf("\n Average Turnaround Time is: %f",ata);
 
 	return 0;
 }
