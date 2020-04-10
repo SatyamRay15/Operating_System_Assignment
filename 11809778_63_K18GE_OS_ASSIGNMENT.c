@@ -51,7 +51,7 @@ int main()                              //Main process
 		printf("  P%d\t\t   %d\t\t   %d \n",process_id[i],arrival_time[i],burst_time[i]);
 	}
 
-	//Here we are using the sorting method to sort the processes and select the largest from it
+	//Here we are using the sorting method in decending order to sort the processes and select the largest from it
 	printf("The value with the largest burst time will be selected: \n");
 	for(int k=1;k<=j;k++)
 	{
