@@ -20,6 +20,7 @@ int main()                              //Main process
 
 	//The number of processes taken from user
         printf("Enter the number of processes to be executed: \n");
+	printf("Note: Please enter an integer value: \n");
         scanf("%d",&j);
 
 	//Declaration of variables
@@ -29,6 +30,7 @@ int main()                              //Main process
 
 	//Arrival time taken from the user
 	printf("Enter the values of arrival time: \n");
+	printf("Note: Please enter an integer value: \n");
 	for(int i=1;i<=j;i++)
 	{
 		scanf("%d",&arrival_time[i]);
